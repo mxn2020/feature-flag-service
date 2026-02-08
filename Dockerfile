@@ -5,13 +5,14 @@ WORKDIR /app
 # Install uv for fast dependency management
 RUN pip install --no-cache-dir uv
 
-# Copy dependency specification
-COPY pyproject.toml ./
+# Copy dependency specification and files required by hatchling build
+COPY pyproject.toml README.md ./
+COPY app/ ./app/
 
-# Install production dependencies only
+# Install dependencies
 RUN uv pip install --system --no-cache ".[dev]"
 
-# Copy application code
+# Copy remaining project files (tests, docs, alembic, etc.)
 COPY . .
 
 # Create non-root user
