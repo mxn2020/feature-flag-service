@@ -18,6 +18,7 @@ from urllib.request import Request, urlopen
 
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000").rstrip("/")
 ADMIN_KEY = os.environ.get("ADMIN_API_KEY", "change-me-admin-key")
+READ_KEY = os.environ.get("READ_API_KEY", "change-me-read-key")
 API = f"{BASE_URL}/api/v1"
 
 
@@ -31,7 +32,7 @@ def _req(method: str, path: str, body: dict[str, object] | None = None) -> dict[
     }
     req = Request(url, data=data, headers=headers, method=method)
     try:
-        with urlopen(req) as resp:  # noqa: S310
+        with urlopen(req, timeout=30) as resp:
             return json.loads(resp.read().decode())  # type: ignore[no-any-return]
     except HTTPError as exc:
         resp_body = exc.read().decode()
@@ -148,8 +149,7 @@ def main() -> None:
     )
 
     print("\nDone! Try these curl commands:\n")
-    read_key = os.environ.get("READ_API_KEY", "change-me-read-key")
-    print(f'  READ_KEY="{read_key}"')
+    print(f'  READ_KEY="{READ_KEY}"')
     print(f"  # Health check")
     print(f"  curl -s {BASE_URL}/api/v1/healthz | python3 -m json.tool")
     print(f"  # Evaluate deny-list user")

@@ -49,7 +49,7 @@ def create_rule(
     else:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Provide either flag_id or flag_key",
+            detail="Provide either flag_id or flag_key (not both required)",
         )
     if not flag:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Flag not found")
@@ -67,7 +67,7 @@ def create_rule(
     else:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Provide either environment_id or env_key",
+            detail="Provide either environment_id or env_key (not both required)",
         )
     if not env:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Environment not found")
