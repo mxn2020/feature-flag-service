@@ -7,7 +7,6 @@ import uuid
 
 from pydantic import BaseModel, Field
 
-
 # ── Flags ──────────────────────────────────────────────────────────
 
 
@@ -125,7 +124,9 @@ class EvalResponse(BaseModel):
     reason: str
     rule_id: str | None = None
     eval_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    timestamp: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    timestamp: datetime.datetime = Field(
+        default_factory=lambda: datetime.datetime.now(datetime.UTC)
+    )
 
 
 class BulkEvalResponse(BaseModel):

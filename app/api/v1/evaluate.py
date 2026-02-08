@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
 from app.core.auth import require_read
 from app.core.database import get_db
 from app.core.evaluation import evaluate_flag
 from app.schemas.schemas import BulkEvalRequest, BulkEvalResponse, EvalRequest, EvalResponse
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
 router = APIRouter(tags=["evaluate"])
 

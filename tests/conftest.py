@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 import pytest
 from fastapi.testclient import TestClient
@@ -14,6 +14,9 @@ from app.core.config import Settings, get_settings, reset_settings
 from app.core.database import get_db, reset_engine
 from app.main import create_app
 from app.models.models import Base
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 ADMIN_KEY = "test-admin-key"
 READ_KEY = "test-read-key"

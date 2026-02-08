@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import json
+from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from app.core.auth import require_admin
 from app.core.database import get_db
 from app.models.models import Environment, Flag, Rule
 from app.schemas.schemas import Predicate, RuleCreate, RuleResponse
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/rules", tags=["rules"])
 
@@ -70,9 +73,7 @@ def list_rules(
     if flag_id:
         stmt = stmt.where(Rule.flag_id == flag_id)
     if env:
-        env_obj = db.execute(
-            select(Environment).where(Environment.key == env)
-        ).scalar_one_or_none()
+        env_obj = db.execute(select(Environment).where(Environment.key == env)).scalar_one_or_none()
         if env_obj:
             stmt = stmt.where(Rule.environment_id == env_obj.id)
         else:

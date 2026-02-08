@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
 
 
 def _setup_flag_with_env(
@@ -79,7 +82,9 @@ class TestEvaluation:
         assert data["enabled"] is True
         assert data["reason"] == "targeted_allow"
 
-    def test_targeted_deny_takes_precedence(self, client: TestClient, admin_headers: dict[str, str]) -> None:
+    def test_targeted_deny_takes_precedence(
+        self, client: TestClient, admin_headers: dict[str, str]
+    ) -> None:
         _setup_flag_with_env(client, admin_headers, allow=["both"], deny=["both"])
         resp = client.post(
             "/api/v1/evaluate",
@@ -119,7 +124,9 @@ class TestEvaluation:
         assert data["variant"] == "us-variant"
         assert data["rule_id"] is not None
 
-    def test_rule_no_match_falls_through(self, client: TestClient, admin_headers: dict[str, str]) -> None:
+    def test_rule_no_match_falls_through(
+        self, client: TestClient, admin_headers: dict[str, str]
+    ) -> None:
         flag_id, env_id = _setup_flag_with_env(client, admin_headers)
         client.post(
             "/api/v1/rules",
@@ -227,8 +234,11 @@ class TestPredicates:
     """Test individual predicate operators via rule evaluation."""
 
     def _setup_with_rule(
-        self, client: TestClient, admin_headers: dict[str, str],
-        conditions: list[dict[str, object]], flag_key: str = "pred-flag",
+        self,
+        client: TestClient,
+        admin_headers: dict[str, str],
+        conditions: list[dict[str, object]],
+        flag_key: str = "pred-flag",
     ) -> None:
         flag_resp = client.post(
             "/api/v1/flags",
@@ -256,13 +266,16 @@ class TestPredicates:
 
     def test_exists_operator(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         self._setup_with_rule(
-            client, admin_headers,
+            client,
+            admin_headers,
             conditions=[{"attribute": "beta", "operator": "exists"}],
         )
         resp = client.post(
             "/api/v1/evaluate",
             json={
-                "flag_key": "pred-flag", "env_key": "prod", "user_id": "u1",
+                "flag_key": "pred-flag",
+                "env_key": "prod",
+                "user_id": "u1",
                 "attributes": {"beta": True},
             },
             headers=admin_headers,
@@ -271,14 +284,17 @@ class TestPredicates:
 
     def test_not_equals_operator(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         self._setup_with_rule(
-            client, admin_headers,
+            client,
+            admin_headers,
             conditions=[{"attribute": "plan", "operator": "not_equals", "value": "free"}],
             flag_key="ne-flag",
         )
         resp = client.post(
             "/api/v1/evaluate",
             json={
-                "flag_key": "ne-flag", "env_key": "prod", "user_id": "u1",
+                "flag_key": "ne-flag",
+                "env_key": "prod",
+                "user_id": "u1",
                 "attributes": {"plan": "pro"},
             },
             headers=admin_headers,
@@ -287,14 +303,17 @@ class TestPredicates:
 
     def test_contains_operator(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         self._setup_with_rule(
-            client, admin_headers,
+            client,
+            admin_headers,
             conditions=[{"attribute": "email", "operator": "contains", "value": "@example.com"}],
             flag_key="contains-flag",
         )
         resp = client.post(
             "/api/v1/evaluate",
             json={
-                "flag_key": "contains-flag", "env_key": "prod", "user_id": "u1",
+                "flag_key": "contains-flag",
+                "env_key": "prod",
+                "user_id": "u1",
                 "attributes": {"email": "user@example.com"},
             },
             headers=admin_headers,
@@ -303,14 +322,19 @@ class TestPredicates:
 
     def test_in_list_operator(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         self._setup_with_rule(
-            client, admin_headers,
-            conditions=[{"attribute": "country", "operator": "in_list", "value": ["US", "CA", "UK"]}],
+            client,
+            admin_headers,
+            conditions=[
+                {"attribute": "country", "operator": "in_list", "value": ["US", "CA", "UK"]}
+            ],
             flag_key="in-flag",
         )
         resp = client.post(
             "/api/v1/evaluate",
             json={
-                "flag_key": "in-flag", "env_key": "prod", "user_id": "u1",
+                "flag_key": "in-flag",
+                "env_key": "prod",
+                "user_id": "u1",
                 "attributes": {"country": "CA"},
             },
             headers=admin_headers,
@@ -319,14 +343,17 @@ class TestPredicates:
 
     def test_numeric_gt(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         self._setup_with_rule(
-            client, admin_headers,
+            client,
+            admin_headers,
             conditions=[{"attribute": "age", "operator": "gt", "value": 18}],
             flag_key="gt-flag",
         )
         resp = client.post(
             "/api/v1/evaluate",
             json={
-                "flag_key": "gt-flag", "env_key": "prod", "user_id": "u1",
+                "flag_key": "gt-flag",
+                "env_key": "prod",
+                "user_id": "u1",
                 "attributes": {"age": 25},
             },
             headers=admin_headers,
@@ -335,14 +362,17 @@ class TestPredicates:
 
     def test_numeric_lte(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         self._setup_with_rule(
-            client, admin_headers,
+            client,
+            admin_headers,
             conditions=[{"attribute": "score", "operator": "lte", "value": 100}],
             flag_key="lte-flag",
         )
         resp = client.post(
             "/api/v1/evaluate",
             json={
-                "flag_key": "lte-flag", "env_key": "prod", "user_id": "u1",
+                "flag_key": "lte-flag",
+                "env_key": "prod",
+                "user_id": "u1",
                 "attributes": {"score": 50},
             },
             headers=admin_headers,

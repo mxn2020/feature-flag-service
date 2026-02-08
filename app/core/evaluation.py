@@ -17,13 +17,16 @@ from __future__ import annotations
 import hashlib
 import json
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from app.models.models import Environment, Flag, FlagEnvironment, Rule
 from app.schemas.schemas import EvalRequest, EvalResponse, Predicate
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
 
 def _deterministic_bucket(flag_key: str, env_key: str, user_id: str) -> int:
@@ -106,7 +109,7 @@ def _match_all_conditions(
 
 def evaluate_flag(req: EvalRequest, db: Session) -> EvalResponse:
     """Evaluate a single flag for a user and return the result."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     eval_id = str(uuid.uuid4())
 
     # Look up the flag
@@ -135,9 +138,7 @@ def evaluate_flag(req: EvalRequest, db: Session) -> EvalResponse:
         )
 
     # Look up environment
-    env = db.execute(
-        select(Environment).where(Environment.key == req.env_key)
-    ).scalar_one_or_none()
+    env = db.execute(select(Environment).where(Environment.key == req.env_key)).scalar_one_or_none()
 
     # Determine per-env config (fall back to flag-level)
     targeted_deny: list[str] = json.loads(flag.targeted_deny)

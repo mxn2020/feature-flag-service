@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
 
 
 def _create_flag_and_env(client: TestClient, admin_headers: dict[str, str]) -> tuple[str, str]:
@@ -31,9 +34,7 @@ class TestRuleCRUD:
                 "flag_id": flag_id,
                 "environment_id": env_id,
                 "priority": 1,
-                "conditions": [
-                    {"attribute": "country", "operator": "equals", "value": "US"}
-                ],
+                "conditions": [{"attribute": "country", "operator": "equals", "value": "US"}],
                 "variant": "on",
             },
             headers=admin_headers,
@@ -59,7 +60,9 @@ class TestRuleCRUD:
         assert resp.status_code == 200
         assert len(resp.json()) == 1
 
-    def test_create_rule_invalid_flag(self, client: TestClient, admin_headers: dict[str, str]) -> None:
+    def test_create_rule_invalid_flag(
+        self, client: TestClient, admin_headers: dict[str, str]
+    ) -> None:
         resp = client.post(
             "/api/v1/rules",
             json={

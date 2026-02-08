@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from app.core.auth import require_admin
 from app.core.database import get_db
 from app.models.models import Environment
 from app.schemas.schemas import EnvironmentCreate, EnvironmentResponse
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/environments", tags=["environments"])
 

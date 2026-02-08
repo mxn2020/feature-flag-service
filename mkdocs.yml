@@ -1,0 +1,24 @@
+site_name: Feature Flag Service
+site_description: A minimal but serious feature flag platform
+repo_url: https://github.com/mxn2020/feature-flag-service
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference: api-reference.md
+  - Evaluation Logic: evaluation.md
+  - Contributing: contributing.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true

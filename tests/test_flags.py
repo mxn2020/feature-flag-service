@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
 
 
 class TestFlagCRUD:
@@ -22,7 +25,9 @@ class TestFlagCRUD:
 
     def test_create_duplicate_flag(self, client: TestClient, admin_headers: dict[str, str]) -> None:
         client.post("/api/v1/flags", json={"key": "dup", "name": "Dup"}, headers=admin_headers)
-        resp = client.post("/api/v1/flags", json={"key": "dup", "name": "Dup"}, headers=admin_headers)
+        resp = client.post(
+            "/api/v1/flags", json={"key": "dup", "name": "Dup"}, headers=admin_headers
+        )
         assert resp.status_code == 409
 
     def test_list_flags(self, client: TestClient, admin_headers: dict[str, str]) -> None:

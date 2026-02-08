@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 from sqlalchemy import create_engine, event
-from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import get_settings
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from sqlalchemy.engine import Engine
 
 _engine: Engine | None = None
 _session_factory: sessionmaker[Session] | None = None
@@ -16,7 +20,7 @@ _session_factory: sessionmaker[Session] | None = None
 
 def _enable_sqlite_fk(dbapi_conn: object, _connection_record: object) -> None:
     """Enable foreign key enforcement for SQLite connections."""
-    cursor = getattr(dbapi_conn, "cursor")()
+    cursor = dbapi_conn.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 

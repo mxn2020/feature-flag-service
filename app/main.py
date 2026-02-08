@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from collections.abc import AsyncGenerator
+from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 
 from app.api.v1.router import router as v1_router
 from app.core.database import get_engine
 from app.models.models import Base
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncGenerator
 
 
 @asynccontextmanager
@@ -32,4 +35,3 @@ def create_app(*, run_startup: bool = True) -> FastAPI:
 
 
 app = create_app()
-

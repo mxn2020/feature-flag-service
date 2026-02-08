@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
 
 
 class TestEnvironmentCRUD:
@@ -17,7 +20,9 @@ class TestEnvironmentCRUD:
         assert data["key"] == "production"
         assert data["name"] == "Production"
 
-    def test_create_duplicate_environment(self, client: TestClient, admin_headers: dict[str, str]) -> None:
+    def test_create_duplicate_environment(
+        self, client: TestClient, admin_headers: dict[str, str]
+    ) -> None:
         client.post(
             "/api/v1/environments",
             json={"key": "staging", "name": "Staging"},
