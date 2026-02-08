@@ -145,7 +145,7 @@ def evaluate_flag(req: EvalRequest, db: Session) -> EvalResponse:
     targeted_allow: list[str] = json.loads(flag.targeted_allow)
     rollout_percentage = flag.rollout_percentage
     default_variant = flag.default_variant
-    env_enabled = flag.enabled
+    env_enabled: bool = flag.enabled
 
     if env is not None:
         flag_env = db.execute(

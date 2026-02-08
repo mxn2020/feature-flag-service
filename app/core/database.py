@@ -20,7 +20,7 @@ _session_factory: sessionmaker[Session] | None = None
 
 def _enable_sqlite_fk(dbapi_conn: object, _connection_record: object) -> None:
     """Enable foreign key enforcement for SQLite connections."""
-    cursor = dbapi_conn.cursor()
+    cursor = dbapi_conn.cursor()  # type: ignore[attr-defined]
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 
