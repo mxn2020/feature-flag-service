@@ -74,3 +74,49 @@ class TestRuleCRUD:
             headers=admin_headers,
         )
         assert resp.status_code == 404
+
+    def test_create_rule_by_keys(self, client: TestClient, admin_headers: dict[str, str]) -> None:
+        """Create a rule using flag_key + env_key instead of IDs."""
+        _create_flag_and_env(client, admin_headers)
+        resp = client.post(
+            "/api/v1/rules",
+            json={
+                "flag_key": "rule-flag",
+                "env_key": "dev",
+                "priority": 2,
+                "conditions": [{"attribute": "plan", "operator": "equals", "value": "pro"}],
+                "variant": "pro-variant",
+            },
+            headers=admin_headers,
+        )
+        assert resp.status_code == 201
+        data = resp.json()
+        assert data["priority"] == 2
+        assert data["variant"] == "pro-variant"
+
+    def test_create_rule_by_keys_not_found(
+        self, client: TestClient, admin_headers: dict[str, str]
+    ) -> None:
+        """Key-based creation returns 404 for nonexistent keys."""
+        resp = client.post(
+            "/api/v1/rules",
+            json={
+                "flag_key": "nope",
+                "env_key": "nope",
+                "priority": 0,
+                "conditions": [],
+            },
+            headers=admin_headers,
+        )
+        assert resp.status_code == 404
+
+    def test_create_rule_missing_identifiers(
+        self, client: TestClient, admin_headers: dict[str, str]
+    ) -> None:
+        """Must provide either flag_id or flag_key."""
+        resp = client.post(
+            "/api/v1/rules",
+            json={"priority": 0, "conditions": []},
+            headers=admin_headers,
+        )
+        assert resp.status_code == 422

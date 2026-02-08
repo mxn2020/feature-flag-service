@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Python 3.12+
+- **Python 3.12+** (3.12 and 3.13 are tested in CI)
 - [uv](https://github.com/astral-sh/uv) (recommended) or pip
 
 ## Installation
@@ -11,8 +11,11 @@
 git clone https://github.com/mxn2020/feature-flag-service.git
 cd feature-flag-service
 
+# Install uv if you don't have it (pick one)
+brew install uv          # macOS (preferred, PEP 668 safe)
+pipx install uv          # cross-platform alternative
+
 # Create virtualenv and install dependencies
-pip install uv
 uv venv .venv
 source .venv/bin/activate  # Linux/macOS
 uv pip install -e ".[dev]"

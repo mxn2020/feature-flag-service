@@ -1058,12 +1058,48 @@
       "RuleCreate": {
         "properties": {
           "flag_id": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Flag Id"
           },
+          "flag_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flag Key"
+          },
           "environment_id": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Environment Id"
+          },
+          "env_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Env Key"
           },
           "priority": {
             "type": "integer",
@@ -1090,10 +1126,6 @@
           }
         },
         "type": "object",
-        "required": [
-          "flag_id",
-          "environment_id"
-        ],
         "title": "RuleCreate"
       },
       "RuleResponse": {

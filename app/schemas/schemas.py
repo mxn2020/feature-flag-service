@@ -81,8 +81,10 @@ class Predicate(BaseModel):
 
 
 class RuleCreate(BaseModel):
-    flag_id: str
-    environment_id: str
+    flag_id: str | None = None
+    flag_key: str | None = None
+    environment_id: str | None = None
+    env_key: str | None = None
     priority: int = Field(0, ge=0)
     conditions: list[Predicate] = Field(default_factory=list)
     enabled: bool = True
