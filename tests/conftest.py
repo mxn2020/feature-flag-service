@@ -40,7 +40,7 @@ def db_session() -> Generator[Session, None, None]:
     )
 
     @event.listens_for(engine, "connect")
-    def _enable_fk(dbapi_conn, _rec):  # type: ignore[no-untyped-def]
+    def _enable_fk(dbapi_conn, _connection_record):  # type: ignore[no-untyped-def]
         cursor = dbapi_conn.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
