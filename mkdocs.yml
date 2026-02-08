@@ -11,6 +11,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - API Reference: api-reference.md
+  - Rules & Targeting: rules.md
   - Evaluation Logic: evaluation.md
   - Contributing: contributing.md
 

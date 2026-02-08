@@ -38,19 +38,43 @@ def create_rule(
     db: Session = Depends(get_db),
     _key: str = Depends(require_admin),
 ) -> RuleResponse:
-    # Validate references
-    flag = db.execute(select(Flag).where(Flag.id == body.flag_id)).scalar_one_or_none()
+    # Resolve flag: accept flag_id or flag_key
+    flag_id = body.flag_id
+    if flag_id:
+        flag = db.execute(select(Flag).where(Flag.id == flag_id)).scalar_one_or_none()
+    elif body.flag_key:
+        flag = db.execute(select(Flag).where(Flag.key == body.flag_key)).scalar_one_or_none()
+        if flag:
+            flag_id = flag.id
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Provide either flag_id or flag_key",
+        )
     if not flag:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Flag not found")
-    env = db.execute(
-        select(Environment).where(Environment.id == body.environment_id)
-    ).scalar_one_or_none()
+
+    # Resolve environment: accept environment_id or env_key
+    env_id = body.environment_id
+    if env_id:
+        env = db.execute(select(Environment).where(Environment.id == env_id)).scalar_one_or_none()
+    elif body.env_key:
+        env = db.execute(
+            select(Environment).where(Environment.key == body.env_key)
+        ).scalar_one_or_none()
+        if env:
+            env_id = env.id
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Provide either environment_id or env_key",
+        )
     if not env:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Environment not found")
 
     rule = Rule(
-        flag_id=body.flag_id,
-        environment_id=body.environment_id,
+        flag_id=flag_id,
+        environment_id=env_id,
         priority=body.priority,
         conditions=json.dumps([c.model_dump() for c in body.conditions]),
         enabled=body.enabled,

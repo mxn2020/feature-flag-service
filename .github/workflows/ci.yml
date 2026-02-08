@@ -61,3 +61,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Docker image
         run: docker build -t feature-flag-service .
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install uv
+      - run: uv venv .venv && . .venv/bin/activate && uv pip install -e ".[dev]"
+      - name: Install pip-audit
+        run: . .venv/bin/activate && uv pip install pip-audit
+      - name: Run pip-audit
+        run: . .venv/bin/activate && pip-audit || true
