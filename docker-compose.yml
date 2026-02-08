@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ADMIN_API_KEY=${ADMIN_API_KEY:-change-me-admin-key}
+      - READ_API_KEY=${READ_API_KEY:-change-me-read-key}
+      - DATABASE_URL=sqlite:///./data/feature_flags.db
+    volumes:
+      - db-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  db-data:
