@@ -3,7 +3,7 @@ name = "feature-flag-service"
 version = "0.1.0"
 description = "A minimal but serious feature flag platform"
 readme = "README.md"
-license = {text = "MIT"}
+license = {text = "Apache-2.0"}
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0,<1.0",
